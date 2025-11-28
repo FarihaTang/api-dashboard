@@ -1,11 +1,5 @@
 import { http } from '../../../shared/http';
 import type { GetUsersParams } from './types';
-type UserQuery = {
-  keyword?: string;
-  status?: string;
-  page?: number;
-  pageSize?: number;
-};
 
 type CreateUserInput = {
   firstName: string;
@@ -34,7 +28,7 @@ export async function getUsers(params: GetUsersParams) {
   });
 
   return {
-    items: data.users,
+    users: data.users,
     total: data.total,
     totalPages: Math.ceil(data.total / pageSize),
   };
@@ -46,9 +40,9 @@ export async function deleteUser(id: number) {
 }
 // add
 export async function createUser(payload: CreateUserInput) {
-  return http.post(`${API}/users/add`, payload);
+  return http.post(`${API}/users/add`, { body: payload });
 }
 // update
 export async function updateUser(id: number, payload: UpdateUserInput) {
-  return http.put(`${API}/users/${id}`, payload);
+  return http.put(`${API}/users/${id}`, { body: payload });
 }

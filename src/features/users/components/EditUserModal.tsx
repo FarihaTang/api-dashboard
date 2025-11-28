@@ -1,5 +1,5 @@
 import UserForm from './UserForm'
-import type { User } from './UserTable'
+import type { User } from '../types/User'
 import LoadingOverlay from '../../../shared/components/LoadingOverlay';
 
 type EditUserModalProps = {

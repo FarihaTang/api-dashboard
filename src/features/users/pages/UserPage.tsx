@@ -8,7 +8,7 @@ import { UserTable } from "../components/UserTable";
 import { queryClient } from '../../../app/queryClient'
 import { useState } from "react";
 import AddUserModal from "../components/AddUserModal";
-import type { User } from '../components/UserTable'
+import type { User } from '../types/User'
 import EditUserModal from "../components/EditUserModal";
 import SearchSkeleton from "../components/SearchSkeleton";
 import TableSkeleton from "../../../shared/components/TableSkeleton";
@@ -140,6 +140,7 @@ function UserPage() {
 
     // 失败 → 回滚
     onError: (_err, _vars, ctx) => {
+      const key = ["users", { keyword, page, pageSize }];
       if (ctx?.prev) queryClient.setQueryData(key, ctx.prev);
     },
 
@@ -176,7 +177,7 @@ function UserPage() {
     );
   }
   // 无搜索结果
-  if (!isLoading && data.items.length === 0 && keyword) {
+  if (!isLoading && data?.users.length === 0 && keyword) {
     return (
       <div className="p-6 space-y-4">
         <SearchInput
@@ -201,7 +202,7 @@ function UserPage() {
     );
   }
   // 完全无数据
-  if (!isLoading && data.items.length === 0 && !keyword) {
+  if (!isLoading && data?.users.length === 0 && !keyword) {
     return (
       <div className="p-6 space-y-4">
         <EmptyState
@@ -227,8 +228,8 @@ function UserPage() {
         <SearchInput value={keyword} onChange={(v) => updateParams({ keyword: v, page: "1" })}></SearchInput>
         <button onClick={() => setAddOpen(true)}>+ Add User</button>
       </div>
-      <UserTable users={data.items} onDelete={(id) => deleteMutation.mutate(id)} onEdit={(user) => setEditingUser(user)}></UserTable>
-      <Pagination page={page} totalPages={data.totalPages} onChange={(p) => updateParams({ page: String(p) })}></Pagination>
+      <UserTable users={data?.users ?? []} onDelete={(id) => deleteMutation.mutate(id)} onEdit={(user) => setEditingUser(user)}></UserTable>
+      <Pagination page={page} totalPages={data?.totalPages ?? 1} onChange={(p) => updateParams({ page: String(p) })}></Pagination>
       {/* Add User */}
       <AddUserModal open={addOpen} onClose={() => setAddOpen(false)} onSubmit={handleAddUser} submitting={addUserMutation.isPending}></AddUserModal>
       {/* Edit User */}
